@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Augnana — Academic Resource Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+:root{
+  --bg:#07090f;--s1:#0d1117;--s2:#111827;--s3:#1a2235;
+  --b1:#1e2d40;--b2:#2a3d55;--b3:#3a5068;
+  --blue:#4f8ef7;--blue2:#2563eb;--teal:#06d6a0;
+  --amber:#fbbf24;--rose:#f43f5e;--violet:#8b5cf6;
+  --t1:#f0f6ff;--t2:#94a3b8;--t3:#4b6280;--t4:#2a3d55;
+  --r:12px;--r2:8px;--nav:252px;
+  --fh:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--fh);background:var(--bg);color:var(--t1)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+button,input,select,textarea{font-family:inherit}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes orb{0%,100%{transform:translate(0,0)}50%{transform:translate(25px,-20px)}}
+@keyframes popIn{0%{transform:scale(.85);opacity:0}80%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+
+/* LOGIN */
+.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(79,142,247,.07) 0%,transparent 70%)}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;animation:orb 10s ease-in-out infinite}
+.o1{width:550px;height:550px;background:rgba(79,142,247,.13);top:-160px;left:-120px}
+.o2{width:450px;height:450px;background:rgba(6,214,160,.09);bottom:-120px;right:-80px;animation-delay:-3.5s}
+.o3{width:320px;height:320px;background:rgba(139,92,246,.07);top:35%;right:22%;animation-delay:-7s}
+.lc{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:40px;width:100%;max-width:415px;position:relative;z-index:2;box-shadow:0 24px 80px rgba(0,0,0,.6);animation:fadeUp .5s cubic-bezier(.16,1,.3,1)}
+.lc::before{content:'';position:absolute;inset:0;border-radius:20px;padding:1px;background:linear-gradient(135deg,rgba(79,142,247,.25),transparent 50%,rgba(6,214,160,.1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.l-logorow{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.l-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff}
+.l-name{font-size:22px;font-weight:800;letter-spacing:-.4px;background:linear-gradient(90deg,var(--t1),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.l-sub{font-size:13px;color:var(--t3);margin-bottom:28px}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.rc{padding:11px 6px;border:1px solid var(--b1);border-radius:var(--r2);background:var(--s2);cursor:pointer;text-align:center;transition:.18s;position:relative}
+.rc:hover{border-color:var(--b2)}
+.rc.sel{border-color:var(--blue);background:rgba(79,142,247,.07)}
+.rc.sel::after{content:'✓';position:absolute;top:4px;right:6px;font-size:10px;color:var(--blue);font-weight:700}
+.rc-ic{font-size:20px;margin-bottom:4px}
+.rc-lb{font-size:12px;font-weight:600;color:var(--t2)}
+.rc.sel .rc-lb{color:var(--blue)}
+.fl{margin-bottom:15px}
+.fl label{display:block;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.fi{width:100%;padding:10px 13px;background:var(--bg);border:1px solid var(--b1);border-radius:var(--r2);color:var(--t1);font-size:14px;outline:none;transition:.18s}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,142,247,.11)}
+.fi::placeholder{color:var(--t4)}
+.pw-wrap{position:relative}
+.pw-wrap .fi{padding-right:40px}
+.pw-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:15px;padding:2px;transition:.15s}
+.pw-eye:hover{color:var(--t2)}
+.err{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);border-radius:var(--r2);padding:9px 13px;font-size:13px;color:var(--rose);margin-bottom:13px}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:var(--r2);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.22s;margin-top:4px}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(79,142,247,.38)}
+.btn-login:disabled{opacity:.65;cursor:default;transform:none}
+.demo-box{margin-top:17px;background:rgba(6,214,160,.04);border:1px dashed rgba(6,214,160,.2);border-radius:var(--r2);padding:11px 14px}
+.db-title{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.db-row{display:flex;justify-content:space-between;align-items:center;padding:4px 5px;border-radius:5px;cursor:pointer;transition:.12s}
+.db-row:hover{background:rgba(6,214,160,.06)}
+.db-role{font-size:12px;font-weight:700;color:var(--teal);min-width:60px;text-transform:capitalize}
+.db-cred{font-size:11px;color:var(--t3)}
+
+/* LAYOUT */
+.layout{display:flex;height:100vh;overflow:hidden}
+.nav{width:var(--nav);height:100vh;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0}
+.nav-top{padding:17px 15px 13px;border-bottom:1px solid var(--b1)}
+.nav-logo{display:flex;align-items:center;gap:8px;margin-bottom:13px}
+.nav-li{width:27px;height:27px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff}
+.nav-ln{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.nav-user{display:flex;align-items:center;gap:9px}
+.avatar{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;letter-spacing:.5px}
+.nav-uname{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-urole{font-size:11px;color:var(--t3);text-transform:capitalize}
+.nav-body{flex:1;padding:11px 9px;overflow-y:auto}
+.nav-sl{font-size:10px;font-weight:700;color:var(--t4);letter-spacing:1.2px;text-transform:uppercase;padding:9px 9px 3px}
+.ni{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border:none;border-radius:var(--r2);background:transparent;color:var(--t2);cursor:pointer;font-size:13px;font-weight:500;transition:.14s;text-align:left;position:relative}
+.ni:hover{background:var(--s2);color:var(--t1)}
+.ni.act{background:rgba(79,142,247,.1);color:var(--blue)}
+.ni.act::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;background:var(--blue);border-radius:0 3px 3px 0}
+.ni-ic{width:17px;text-align:center;font-size:15px;flex-shrink:0}
+.nbadge{margin-left:auto;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px;min-width:17px;text-align:center}
+.nbr{background:var(--rose);color:#fff}
+.nbb{background:var(--blue);color:#fff}
+.nav-foot{padding:10px 9px;border-top:1px solid var(--b1)}
+.nav-lo{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border:none;border-radius:var(--r2);background:transparent;color:var(--t3);cursor:pointer;font-size:13px;font-weight:500;transition:.14s;text-align:left}
+.nav-lo:hover{background:rgba(244,63,94,.07);color:var(--rose)}
+
+/* MAIN */
+.main{flex:1;height:100vh;overflow-y:auto;background:var(--bg)}
+.page{padding:24px 26px;animation:fadeIn .2s ease}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap}
+.ph-t{font-size:21px;font-weight:800;letter-spacing:-.4px}
+.ph-s{font-size:13px;color:var(--t3);margin-top:3px}
+.ph-r{display:flex;align-items:center;gap:9px;flex-shrink:0}
+
+/* STAT CARDS */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:13px;margin-bottom:20px}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:15px 17px;position:relative;overflow:hidden;transition:.18s;cursor:default}
+.sc:hover{border-color:var(--b2);transform:translateY(-2px)}
+.sc-ac{position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r) var(--r) 0 0}
+.sc-ic{font-size:19px;margin-bottom:9px}
+.sc-v{font-size:23px;font-weight:800;line-height:1}
+.sc-l{font-size:12px;color:var(--t2);margin-top:3px}
+.sc-tr{font-size:11px;margin-top:7px}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px;margin-bottom:15px;transition:.18s}
+.card:hover{border-color:var(--b2)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.ct{font-size:15px;font-weight:700}
+.cs{font-size:12px;color:var(--t3);margin-top:1px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border:none;border-radius:var(--r2);cursor:pointer;font-size:13px;font-weight:600;transition:.16s;white-space:nowrap}
+.btn-sm{padding:5px 11px;font-size:12px;gap:4px}
+.btn-xs{padding:3px 9px;font-size:11px;border-radius:6px}
+.bp{background:var(--blue);color:#fff}
+.bp:hover{background:#3d7de5;transform:translateY(-1px);box-shadow:0 5px 18px rgba(79,142,247,.35)}
+.bg{background:rgba(79,142,247,.08);color:var(--blue);border:1px solid rgba(79,142,247,.18)}
+.bg:hover{background:rgba(79,142,247,.14)}
+.bt{background:rgba(6,214,160,.08);color:var(--teal);border:1px solid rgba(6,214,160,.18)}
+.bt:hover{background:rgba(6,214,160,.14)}
+.br{background:rgba(244,63,94,.08);color:var(--rose);border:1px solid rgba(244,63,94,.18)}
+.br:hover{background:rgba(244,63,94,.14)}
+.ba{background:rgba(251,191,36,.08);color:var(--amber);border:1px solid rgba(251,191,36,.18)}
+.bv{background:rgba(139,92,246,.08);color:var(--violet);border:1px solid rgba(139,92,246,.18)}
+.bd{background:var(--s2);color:var(--t2);border:1px solid var(--b1)}
+.bd:hover{background:var(--s3);color:var(--t1)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.bb{background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.18)}
+.bbt{background:rgba(6,214,160,.1);color:var(--teal);border:1px solid rgba(6,214,160,.18)}
+.bbr{background:rgba(244,63,94,.1);color:var(--rose);border:1px solid rgba(244,63,94,.18)}
+.bba{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.18)}
+.bbv{background:rgba(139,92,246,.1);color:var(--violet);border:1px solid rgba(139,92,246,.18)}
+.bbg{background:rgba(148,163,184,.08);color:var(--t2);border:1px solid var(--b1)}
+
+/* INPUT / SELECT */
+.inp{width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--b1);border-radius:var(--r2);color:var(--t1);font-size:13px;outline:none;transition:.18s}
+.inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,142,247,.09)}
+.inp::placeholder{color:var(--t4)}
+.inp:disabled{opacity:.45;cursor:not-allowed}
+.sel{width:100%;padding:9px 30px 9px 11px;background:var(--bg);border:1px solid var(--b1);border-radius:var(--r2);color:var(--t1);font-size:13px;outline:none;transition:.18s;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234b6280'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.sel:focus{border-color:var(--blue)}
+.sel:disabled{opacity:.45;cursor:not-allowed}
+.sel option{background:var(--s2)}
+.fl2{margin-bottom:13px}
+.fl2 label{display:block;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px}
+
+/* SEARCH */
+.sw{position:relative}
+.sw .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--t4);font-size:12px;pointer-events:none}
+.sw .inp{padding-left:28px}
+
+/* PROGRESS */
+.pb{background:var(--s3);border-radius:10px;height:5px;overflow:hidden}
+.pf{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .5s ease}
+
+/* RESOURCE ITEM */
+.ri{display:flex;align-items:center;gap:13px;padding:11px 13px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);cursor:pointer;transition:.16s;margin-bottom:7px}
+.ri:hover{border-color:var(--b2);background:var(--s3);transform:translateX(3px)}
+.ri-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ri-b{flex:1;min-width:0}
+.ri-n{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ri-m{font-size:11px;color:var(--t3);margin-top:1px}
+.ri-a{flex-shrink:0;display:flex;gap:5px;align-items:center}
+
+/* BREADCRUMB */
+.bc{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t3);margin-bottom:14px;flex-wrap:wrap}
+.bcl{color:var(--blue);cursor:pointer;transition:.12s}
+.bcl:hover{color:var(--t1)}
+
+/* FLASHCARD */
+.fcw{perspective:1000px;cursor:pointer;margin-bottom:13px;min-height:200px}
+.fc{width:100%;min-height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.fc.fl{transform:rotateY(180deg)}
+.fcf{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:200px}
+.fc-front{background:var(--s2);border:1px solid var(--b1)}
+.fc-back{background:rgba(6,214,160,.04);border:1px solid rgba(6,214,160,.18);transform:rotateY(180deg)}
+.fct{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;opacity:.55}
+.fcq{font-size:15px;font-weight:600;line-height:1.5;color:var(--t1)}
+.fca{font-size:13px;color:var(--teal);line-height:1.65}
+.fch{font-size:11px;color:var(--t4);margin-top:10px}
+
+/* QUIZ */
+.qo{width:100%;padding:11px 15px;margin-bottom:7px;border:1px solid var(--b1);border-radius:var(--r);background:var(--s2);color:var(--t1);cursor:pointer;text-align:left;font-size:14px;transition:.16s;display:flex;align-items:center;gap:11px}
+.qo:hover:not(:disabled){border-color:var(--b2);background:var(--s3)}
+.qo.correct{border-color:var(--teal)!important;background:rgba(6,214,160,.07)!important;color:var(--teal)!important}
+.qo.wrong{border-color:var(--rose)!important;background:rgba(244,63,94,.07)!important;color:var(--rose)!important}
+.qo:disabled{cursor:default}
+.qol{width:24px;height:24px;border-radius:5px;background:var(--s3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--fm);flex-shrink:0;transition:.16s}
+.qo.correct .qol{background:rgba(6,214,160,.18);border-color:var(--teal)}
+.qo.wrong .qol{background:rgba(244,63,94,.18);border-color:var(--rose)}
+
+/* UPLOAD ZONE */
+.uz{border:2px dashed var(--b2);border-radius:var(--r);padding:36px 22px;text-align:center;cursor:pointer;transition:.18s;background:rgba(79,142,247,.02)}
+.uz:hover{border-color:var(--blue);background:rgba(79,142,247,.04)}
+.uz-ic{font-size:34px;margin-bottom:9px}
+.uz-t{font-weight:700;font-size:14px;margin-bottom:4px}
+.uz-s{font-size:12px;color:var(--t3)}
+
+/* ANNOUNCEMENT */
+.ann{display:flex;gap:13px;padding:13px 15px;background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.14);border-radius:var(--r);margin-bottom:9px;animation:fadeUp .28s ease}
+.ann-ic{font-size:19px;flex-shrink:0}
+.ann-t{font-size:14px;font-weight:700;color:var(--amber);margin-bottom:2px}
+.ann-b{font-size:13px;color:var(--t2);line-height:1.5}
+.ann-m{font-size:11px;color:var(--t4);margin-top:4px}
+
+/* AI BOX */
+.ai-box{background:linear-gradient(135deg,rgba(79,142,247,.05),rgba(6,214,160,.03));border:1px solid rgba(79,142,247,.13);border-radius:var(--r);padding:17px}
+.ai-h{display:flex;align-items:center;gap:7px;margin-bottom:11px}
+.ai-d{width:7px;height:7px;background:var(--teal);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.ai-l{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase}
+.ai-body{font-size:13px;color:var(--t2);line-height:1.75}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeIn .18s ease;backdrop-filter:blur(4px)}
+.modal{background:var(--s1);border:1px solid var(--b2);border-radius:18px;padding:24px;width:100%;max-width:470px;box-shadow:0 24px 80px rgba(0,0,0,.65);animation:popIn .22s ease;position:relative}
+.modal-t{font-size:17px;font-weight:800;margin-bottom:17px;padding-right:26px}
+.modal-x{position:absolute;top:18px;right:18px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t2);cursor:pointer;width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.13s}
+.modal-x:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+
+/* TOAST */
+.tw{position:fixed;bottom:22px;right:22px;z-index:999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:11px 15px;font-size:13px;color:var(--t1);box-shadow:0 4px 24px rgba(0,0,0,.5);animation:fadeUp .25s ease;display:flex;align-items:center;gap:9px;min-width:240px;pointer-events:all;cursor:pointer}
+.ts{border-color:rgba(6,214,160,.3)}
+.te{border-color:rgba(244,63,94,.3)}
+.ti{border-color:rgba(79,142,247,.3)}
+
+/* NOTIF BTN */
+.nbtn{position:relative;padding:7px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r2);cursor:pointer;font-size:16px;transition:.15s;line-height:1}
+.nbtn:hover{border-color:var(--b2)}
+.ndot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--rose);border-radius:50%;border:2px solid var(--bg)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gauto{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}
+
+/* EMPTY */
+.empty{text-align:center;padding:44px 18px}
+.ei{font-size:38px;margin-bottom:11px;opacity:.3}
+.et{font-weight:700;font-size:15px;margin-bottom:5px;color:var(--t2)}
+.es{font-size:13px;color:var(--t3)}
+
+/* SUBJECT CARD */
+.sjc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:17px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.sjc:hover{border-color:var(--b2);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.sjc-glow{position:absolute;top:-25px;right:-25px;width:110px;height:110px;border-radius:50%;filter:blur(38px);opacity:.14;pointer-events:none}
+.sjc-em{font-size:26px;margin-bottom:11px}
+.sjc-n{font-size:15px;font-weight:700;margin-bottom:3px}
+.sjc-m{font-size:12px;color:var(--t3)}
+.sjc-p{margin-top:11px}
+.sjc-pl{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:4px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;padding:9px 13px;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--b1);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid rgba(30,45,64,.55);color:var(--t2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.015)}
+
+/* TOGGLE */
+.tog{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--b1)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, createContext, useContext, useRef } = React;
+
+const Ctx = createContext(null);
+const useCtx = () => useContext(Ctx);
+
+/* ─── DATA ─── */
+const ACC = {
+  student: { email:'student@augnana.edu', pass:'student123', name:'Arjun Sharma',   role:'student', branch:'CSE', year:'2nd Year' },
+  faculty: { email:'faculty@augnana.edu', pass:'faculty123', name:'Dr. Priya Nair', role:'faculty', dept:'Computer Science' },
+  admin:   { email:'admin@augnana.edu',   pass:'admin123',   name:'Admin Kumar',    role:'admin',   title:'Super Admin' },
+};
+const SUBJECTS = [
+  {id:'ds', name:'Data Structures',      emoji:'🌲', color:'#4f8ef7', units:5, topics:18, progress:72},
+  {id:'os', name:'Operating Systems',    emoji:'⚙️', color:'#06d6a0', units:4, topics:14, progress:55},
+  {id:'db', name:'DBMS',                 emoji:'🗄️', color:'#fbbf24', units:4, topics:12, progress:88},
+  {id:'se', name:'Software Engineering', emoji:'🛠️', color:'#f43f5e', units:3, topics:10, progress:40},
+  {id:'ma', name:'Mathematics',          emoji:'📐', color:'#8b5cf6', units:3, topics:9,  progress:63},
+  {id:'cn', name:'Computer Networks',    emoji:'🌐', color:'#fb923c', units:4, topics:13, progress:30},
+];
+const UNITS = {
+  ds:['Unit 1 – Arrays & Strings','Unit 2 – Linked Lists','Unit 3 – Stacks & Queues','Unit 4 – Trees & Graphs','Unit 5 – Sorting & Searching'],
+  os:['Unit 1 – Introduction','Unit 2 – Process Management','Unit 3 – Memory Management','Unit 4 – File Systems'],
+  db:['Unit 1 – ER Model','Unit 2 – Relational Algebra','Unit 3 – SQL','Unit 4 – Transactions'],
+  se:['Unit 1 – SDLC','Unit 2 – Requirements Engineering','Unit 3 – Design Patterns'],
+  ma:['Unit 1 – Calculus','Unit 2 – Linear Algebra','Unit 3 – Probability'],
+  cn:['Unit 1 – OSI & TCP/IP','Unit 2 – Data Link Layer','Unit 3 – Network Layer','Unit 4 – Security'],
+};
+const TOPICS = {
+  'Unit 1 – Arrays & Strings':   ['Introduction to Arrays','Multidimensional Arrays','String Algorithms','Sliding Window'],
+  'Unit 2 – Linked Lists':        ['Singly Linked List','Doubly Linked List','Circular Linked List','List Problems'],
+  'Unit 3 – Stacks & Queues':     ['Stack Implementation','Queue Variants','Deque','Monotonic Stack'],
+  'Unit 4 – Trees & Graphs':      ['Binary Trees','BST Operations','AVL Trees','BFS & DFS','Shortest Paths'],
+  'Unit 5 – Sorting & Searching': ['Comparison Sorts','Non-comparison Sorts','Binary Search','Hashing'],
+  'Unit 1 – Introduction':        ['OS Overview','Kernel Types','System Calls','Booting'],
+  'Unit 2 – Process Management':  ['Process vs Thread','CPU Scheduling','Deadlock','Synchronisation'],
+  'Unit 3 – Memory Management':   ['Paging','Segmentation','Virtual Memory','Page Replacement'],
+  'Unit 4 – File Systems':        ['File Concepts','Directory Structure','File Allocation','Disk Scheduling'],
+  'Unit 1 – ER Model':            ['Entities & Attributes','Relationship Types','Keys','ER Diagrams'],
+  'Unit 2 – Relational Algebra':  ['Select & Project','Join Operations','Set Operations','Division'],
+  'Unit 3 – SQL':                 ['DDL & DML','SQL Joins','Aggregation','Subqueries'],
+  'Unit 4 – Transactions':        ['ACID Properties','Concurrency Control','Two-Phase Locking','Recovery'],
+  'Unit 1 – SDLC':               ['Waterfall Model','Agile & Scrum','DevOps','SDLC Comparison'],
+  'Unit 2 – Requirements Engineering':['Use Cases','User Stories','SRS Document','Prototyping'],
+  'Unit 3 – Design Patterns':    ['Creational Patterns','Structural Patterns','Behavioural Patterns'],
+  'Unit 1 – Calculus':           ['Limits & Continuity','Differentiation','Integration','Series'],
+  'Unit 2 – Linear Algebra':     ['Matrices & Determinants','Eigenvalues','Linear Transformations'],
+  'Unit 3 – Probability':        ['Probability Basics','Distributions','Hypothesis Testing'],
+  'Unit 1 – OSI & TCP/IP':       ['OSI Layers','TCP/IP Stack','Encapsulation','Protocol Overview'],
+  'Unit 2 – Data Link Layer':    ['Framing & Error Detection','MAC Protocols','Ethernet','Switching'],
+  'Unit 3 – Network Layer':      ['IP Addressing','Subnetting','Routing Algorithms','NAT'],
+  'Unit 4 – Security':           ['Cryptography Basics','SSL/TLS','Firewalls','VPN'],
+};
+const FLASHCARDS = {
+  'Introduction to Arrays': [
+    {q:'What is the time complexity of accessing an element by index in an array?',a:'O(1) — Arrays store elements in contiguous memory, so index-based access is direct: address = base + index × size.'},
+    {q:'Difference between static and dynamic arrays?',a:'Static arrays have a fixed size at compile time. Dynamic arrays (ArrayList/vector) resize at runtime — typically doubling capacity, amortising cost to O(1) per insert.'},
+    {q:'Why are arrays cache-friendly?',a:'Arrays occupy contiguous memory, so sequential access benefits from CPU cache pre-loading nearby blocks. Linked structures scatter memory and cause cache misses.'},
+  ],
+  'Binary Trees': [
+    {q:'Maximum nodes at depth d in a binary tree?',a:'2^d nodes. Root is at depth 0 (1 node), depth 1 has ≤2, depth 2 has ≤4, and so on — total nodes ≤ 2^(h+1) - 1.'},
+    {q:'Full vs Complete binary tree?',a:'Full: every node has 0 or 2 children. Complete: all levels fully filled except the last, which is filled left-to-right. A perfect tree is both full and complete.'},
+    {q:'Three types of binary tree traversal?',a:'Inorder (L→N→R): sorted output for BST. Preorder (N→L→R): tree copy, serialisation. Postorder (L→R→N): deletion, expression evaluation.'},
+  ],
+  'SQL Joins': [
+    {q:'INNER JOIN vs LEFT JOIN?',a:'INNER JOIN returns only matched rows from both tables. LEFT JOIN returns all rows from the left table + matched rows from the right (NULL for unmatched right rows).'},
+    {q:'When to use a CROSS JOIN?',a:'CROSS JOIN returns the Cartesian product — every combination of rows (n×m). Useful for generating test data or pairing every item with every other item.'},
+    {q:'What filters grouped results — WHERE or HAVING?',a:'HAVING filters after GROUP BY (on aggregated data). WHERE filters before grouping (on individual rows). You cannot use aggregate functions in WHERE.'},
+  ],
+};
+const QUIZZES = {
+  'Introduction to Arrays': [
+    {q:'Which data structure provides O(1) random access by index?',opts:['Linked List','Array','Binary Tree','Hash Map'],ans:1},
+    {q:'What is the time complexity of inserting at the beginning of an array?',opts:['O(1)','O(log n)','O(n)','O(n²)'],ans:2},
+    {q:'Which technique solves "Max sum subarray of size k" in O(n)?',opts:['Brute force','Sorting','Sliding Window','Divide & Conquer'],ans:2},
+    {q:'When a dynamic array exceeds its capacity, what typically happens?',opts:['Throws exception','Stops accepting','New larger array created and elements copied','First element overwritten'],ans:2},
+  ],
+  'SQL Joins': [
+    {q:'Which JOIN returns all rows from both tables with NULLs for no match?',opts:['INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL OUTER JOIN'],ans:3},
+    {q:'A SELF JOIN joins:',opts:['A table to itself','Two identical tables','Two aliases of the same table','None of the above'],ans:0},
+    {q:'Which clause filters grouped results in SQL?',opts:['WHERE','HAVING','GROUP BY','ORDER BY'],ans:1},
+  ],
+  'CPU Scheduling': [
+    {q:'Which scheduling algorithm can cause starvation?',opts:['Round Robin','FCFS','Priority Scheduling','SRTF'],ans:2},
+    {q:'Shortest Job First (SJF) is optimal for:',opts:['Turnaround time','Response time','Waiting time','Throughput'],ans:2},
+    {q:'What is a context switch?',opts:['Switching between users','Saving/restoring CPU state when switching processes','Changing priority of a process','None of the above'],ans:1},
+  ],
+};
+const AI_SUMMARIES = {
+  'Introduction to Arrays': 'Arrays are the most fundamental data structure — a contiguous block of memory holding same-type elements. Random access is O(1) via pointer arithmetic. Insertion/deletion at arbitrary positions is O(n) due to shifting. Core patterns: two-pointer, sliding window, prefix sums, Kadane\'s algorithm for max subarray. In memory: a[i] = base + i×size. Dynamic arrays amortise resize to O(1) per insert on average. Use arrays when index access dominates; prefer linked lists when frequent mid-insertion is needed.',
+  'Binary Trees': 'A binary tree is a hierarchical structure where each node holds a value and references up to two children. Height h gives O(h) operations; balanced trees guarantee O(log n). Three traversals: inorder (sorted for BST), preorder (serialisation), postorder (deletion/evaluation). BSTs maintain left < node < right for O(log n) search. AVL and Red-Black trees self-balance on insert/delete. Applications: expression trees, Huffman coding, database B-trees, decision trees.',
+  'SQL Joins': 'SQL JOINs combine rows from multiple tables on related columns. INNER JOIN (default): only matched rows. LEFT/RIGHT JOIN: all rows from one side plus matches. FULL OUTER JOIN: union of both. CROSS JOIN: Cartesian product n×m. Self-joins query hierarchical data in one table. Performance tip: index your foreign key columns. The query optimiser picks hash join, merge join, or nested-loop based on table sizes and available indexes. Always alias tables in multi-join queries for clarity.',
+};
+const CLASSES = ['CSE-A','CSE-B','CSE-C','AIML-A','MECH-A'];
+const RES_TYPES = [
+  {id:'notes',label:'Notes',             icon:'📄',color:'rgba(79,142,247,.14)',  badge:'PDF',  bc:'bb'},
+  {id:'video',label:'Lecture Video',     icon:'🎥',color:'rgba(244,63,94,.14)',   badge:'Video',bc:'bbr'},
+  {id:'pyq',  label:'Previous Year Qs', icon:'📝',color:'rgba(251,191,36,.14)',  badge:'PYQ',  bc:'bba'},
+  {id:'flash',label:'Flashcards',        icon:'🧠',color:'rgba(6,214,160,.14)',   badge:'Study',bc:'bbt'},
+  {id:'ai',   label:'AI Summary',        icon:'✨',color:'rgba(79,142,247,.14)',  badge:'AI',   bc:'bb'},
+  {id:'quiz', label:'Practice Quiz',     icon:'📊',color:'rgba(139,92,246,.14)', badge:'Quiz', bc:'bbv'},
+];
+
+/* ─── TOAST ─── */
+function Toast({toasts,remove}){
+  const ic={success:'✅',error:'❌',info:'ℹ️'};
+  return <div className="tw">{toasts.map(t=>(
+    <div key={t.id} className={`toast t${t.type[0]}`} onClick={()=>remove(t.id)}>
+      <span>{ic[t.type]||'💬'}</span><span>{t.msg}</span>
+    </div>
+  ))}</div>;
+}
+
+/* ─── LOGIN ─── */
+function Login({onLogin}){
+  const [role,setRole]=useState('student');
+  const [email,setEmail]=useState('student@augnana.edu');
+  const [pass,setPass]=useState('student123');
+  const [show,setShow]=useState(false);
+  const [err,setErr]=useState('');
+  const [loading,setLoading]=useState(false);
+
+  const fill=r=>{setRole(r);setEmail(ACC[r].email);setPass(ACC[r].pass);setErr('');};
+  const go=()=>{
+    setErr('');
+    const a=ACC[role];
+    if(!email||!pass){setErr('Please fill in all fields.');return;}
+    if(email!==a.email||pass!==a.pass){setErr('Wrong credentials. Click a demo row below to auto-fill.');return;}
+    setLoading(true);
+    setTimeout(()=>onLogin({...a}),650);
+  };
+  return(
+    <div className="lp">
+      <div className="o1 orb"/><div className="o2 orb"/><div className="o3 orb"/>
+      <div className="lc">
+        <div className="l-logorow"><div className="l-icon">A</div><div className="l-name">Augnana</div></div>
+        <div className="l-sub">Academic Resource Hub — Smart Learning Platform</div>
+        <div style={{fontSize:11,fontWeight:700,color:'var(--t3)',marginBottom:9,textTransform:'uppercase',letterSpacing:'.8px'}}>Select Your Role</div>
+        <div className="role-grid">
+          {[['student','🎓','Student'],['faculty','👨‍🏫','Faculty'],['admin','🛡️','Admin']].map(([r,ic,lb])=>(
+            <div key={r} className={`rc${role===r?' sel':''}`} onClick={()=>fill(r)}>
+              <div className="rc-ic">{ic}</div><div className="rc-lb">{lb}</div>
+            </div>
+          ))}
+        </div>
+        <div className="fl"><label>Email</label>
+          <input className="fi" type="email" placeholder="you@augnana.edu" value={email} onChange={e=>{setEmail(e.target.value);setErr('');}}/>
+        </div>
+        <div className="fl"><label>Password</label>
+          <div className="pw-wrap">
+            <input className="fi" type={show?'text':'password'} placeholder="••••••••" value={pass}
+              onChange={e=>{setPass(e.target.value);setErr('');}} onKeyDown={e=>e.key==='Enter'&&go()}/>
+            <button className="pw-eye" onClick={()=>setShow(!show)}>{show?'🙈':'👁️'}</button>
+          </div>
+        </div>
+        {err&&<div className="err">⚠️ {err}</div>}
+        <button className="btn-login" onClick={go} disabled={loading}>
+          {loading
+            ?<span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8}}>
+               <span style={{width:13,height:13,border:'2px solid rgba(255,255,255,.3)',borderTopColor:'#fff',borderRadius:'50%',display:'inline-block',animation:'spin .7s linear infinite'}}/>
+               Signing in…
+             </span>
+            :'Sign In →'}
+        </button>
+        <div className="demo-box">
+          <div className="db-title">Demo Credentials — click to auto-fill</div>
+          {Object.entries(ACC).map(([r,a])=>(
+            <div key={r} className="db-row" onClick={()=>fill(r)}>
+              <span className="db-role">{r}</span>
+              <span className="db-cred">{a.email} / {a.pass}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── SIDEBAR ─── */
+function Sidebar({user,page,setPage,onLogout}){
+  const nd={
+    student:[
+      {sec:'Main',items:[{id:'dashboard',ic:'🏠',l:'Dashboard'},{id:'subjects',ic:'📚',l:'My Subjects',badge:6,bc:'nbb'},{id:'announce',ic:'📣',l:'Announcements',badge:3,bc:'nbr'}]},
+      {sec:'Track',items:[{id:'progress',ic:'📊',l:'My Progress'},{id:'schedule',ic:'🗓️',l:'Timetable'}]},
+    ],
+    faculty:[
+      {sec:'Main',items:[{id:'dashboard',ic:'🏠',l:'Dashboard'},{id:'upload',ic:'⬆️',l:'Upload Resources'},{id:'classes',ic:'👥',l:'My Classes'}]},
+      {sec:'Manage',items:[{id:'resources',ic:'📁',l:'Resource Library'},{id:'announce',ic:'📣',l:'Announcements',badge:3,bc:'nbr'}]},
+    ],
+    admin:[
+      {sec:'Main',items:[{id:'dashboard',ic:'🏠',l:'Dashboard'},{id:'users',ic:'👥',l:'User Management'},{id:'resources',ic:'📁',l:'All Resources'}]},
+      {sec:'Platform',items:[{id:'announce',ic:'📣',l:'Announcements'},{id:'settings',ic:'⚙️',l:'Settings'}]},
+    ],
+  };
+  const secs=nd[user.role]||nd.student;
+  const init=user.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  return(
+    <div className="nav">
+      <div className="nav-top">
+        <div className="nav-logo"><div className="nav-li">A</div><div className="nav-ln">Augnana</div></div>
+        <div className="nav-user">
+          <div className="avatar">{init}</div>
+          <div><div className="nav-uname">{user.name}</div><div className="nav-urole">{user.role}{user.branch?' · '+user.branch:user.dept?' · '+user.dept:''}</div></div>
+        </div>
+      </div>
+      <div className="nav-body">
+        {secs.map(s=>(
+          <div key={s.sec}>
+            <div className="nav-sl">{s.sec}</div>
+            {s.items.map(it=>(
+              <button key={it.id} className={`ni${page===it.id?' act':''}`} onClick={()=>setPage(it.id)}>
+                <span className="ni-ic">{it.ic}</span>{it.l}
+                {it.badge&&<span className={`nbadge ${it.bc||'nbb'}`}>{it.badge}</span>}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="nav-foot">
+        <button className="ni" style={{width:'100%'}} onClick={()=>setPage('settings')}><span className="ni-ic">⚙️</span>Settings</button>
+        <button className="nav-lo" onClick={onLogout}><span className="ni-ic">🚪</span>Sign Out</button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── SHARED ─── */
+function AnnouncePage(){
+  const {toast}=useCtx();
+  const anns=[
+    {t:'Mid-Semester Exam Schedule Released',b:'Exams run April 10–18. Hall tickets issued 3 days prior. See Downloads for timetable.',ti:'2 hours ago',ic:'📣'},
+    {t:'New Resources: DBMS Unit 3 SQL',b:'Dr. Priya Nair uploaded practice sets and video walkthroughs for Unit 3.',ti:'Yesterday',ic:'📚'},
+    {t:'Holiday – Ugadi (April 1)',b:'College closed April 1st. All pending submissions due April 2nd, 11:59 PM.',ti:'2 days ago',ic:'🎉'},
+    {t:'Guest Lecture – ML Trends',b:'Dr. Anand Rao (IIT-H) on April 5th, 10 AM, Main Auditorium. Attendance compulsory.',ti:'3 days ago',ic:'🎤'},
+    {t:'Campus Placement Drive – TCS, Infosys',b:'Pre-placement talks on April 8th. Register on the placement portal before April 4th.',ti:'5 days ago',ic:'💼'},
+  ];
+  return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Announcements</div><div className="ph-s">Latest updates from your institution</div></div></div>
+      {anns.map((a,i)=>(
+        <div className="ann" key={i} style={{animationDelay:i*.07+'s'}}>
+          <div className="ann-ic">{a.ic}</div>
+          <div style={{flex:1}}>
+            <div className="ann-t">{a.t}</div>
+            <div className="ann-b">{a.b}</div>
+            <div style={{display:'flex',justifyContent:'space-between',marginTop:5}}>
+              <div className="ann-m">🕐 {a.ti}</div>
+              <button className="btn btn-xs bg" onClick={()=>toast('Marked as read','info')}>Mark read</button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SettingsPage({user}){
+  const {toast}=useCtx();
+  const [name,setName]=useState(user.name);
+  const [email,setEmail]=useState(user.email);
+  const [tog,setTog]=useState({email:true,remind:true,quiz:false,ann:true});
+  const Tog=({k})=>(
+    <div onClick={()=>setTog(t=>({...t,[k]:!t[k]}))} style={{width:36,height:19,borderRadius:10,background:tog[k]?'var(--blue)':'var(--s3)',cursor:'pointer',position:'relative',transition:'.25s',border:'1px solid '+(tog[k]?'var(--blue2)':'var(--b2)'),flexShrink:0}}>
+      <div style={{width:13,height:13,background:'#fff',borderRadius:'50%',position:'absolute',top:2,left:tog[k]?20:2,transition:'.25s'}}/>
+    </div>
+  );
+  return(
+    <div className="page">
+      <div className="ph"><div className="ph-t">Settings</div></div>
+      <div className="g2" style={{alignItems:'start'}}>
+        <div>
+          <div className="card">
+            <div className="ch"><div className="ct">Profile</div></div>
+            <div className="fl2"><label>Full Name</label><input className="inp" value={name} onChange={e=>setName(e.target.value)}/></div>
+            <div className="fl2"><label>Email</label><input className="inp" value={email} onChange={e=>setEmail(e.target.value)}/></div>
+            <div className="fl2"><label>Role</label><input className="inp" value={user.role} readOnly style={{opacity:.5}}/></div>
+            <button className="btn bp" onClick={()=>toast('Profile saved!','success')}>Save Changes</button>
+          </div>
+          <div className="card">
+            <div className="ch"><div className="ct">Change Password</div></div>
+            <div className="fl2"><label>Current Password</label><input className="inp" type="password" placeholder="••••••••"/></div>
+            <div className="fl2"><label>New Password</label><input className="inp" type="password" placeholder="••••••••"/></div>
+            <div className="fl2"><label>Confirm</label><input className="inp" type="password" placeholder="••••••••"/></div>
+            <button className="btn bp" onClick={()=>toast('Password updated!','success')}>Update</button>
+          </div>
+        </div>
+        <div className="card">
+          <div className="ch"><div className="ct">Notifications</div></div>
+          {[['email','Email for new resources'],['remind','Daily study reminders'],['quiz','Quiz performance reports'],['ann','Announcement alerts']].map(([k,l])=>(
+            <div key={k} className="tog">
+              <span style={{fontSize:13,color:'var(--t2)'}}>{l}</span><Tog k={k}/>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── RESOURCE VIEWER ─── */
+function ResViewer({topic,type,onBack}){
+  const {toast}=useCtx();
+  const res=RES_TYPES.find(r=>r.id===type);
+  const cards=FLASHCARDS[topic]||[
+    {q:`What is the primary purpose of ${topic}?`,a:'Understanding the core concept enables efficient problem solving and informs algorithm design decisions in real-world systems.'},
+    {q:`Key operations associated with ${topic}?`,a:'The main operations are creation, traversal, insertion, deletion, and search — each with distinct time/space complexity trade-offs.'},
+    {q:`A common real-world application of ${topic}?`,a:`${topic} is widely used in operating systems, compilers, databases, and networking to manage and organise data efficiently.`},
+  ];
+  const quiz=QUIZZES[topic]||[
+    {q:`Which best characterises a key property of ${topic}?`,opts:['O(1) access','O(log n) access','O(n) traversal','Depends on implementation'],ans:3},
+    {q:`${topic} is most beneficial when:`,opts:['Data is static','Ordering matters','Frequent lookups dominate','Memory is unlimited'],ans:2},
+    {q:`Worst-case space complexity of most ${topic} implementations?`,opts:['O(1)','O(log n)','O(n)','O(n²)'],ans:2},
+  ];
+  const summ=AI_SUMMARIES[topic]||`${topic} is a foundational concept in computer science. This unit covers theoretical principles, complexity analysis, and practical applications. Key exam themes: time/space trade-offs, edge case handling, and comparative analysis with related techniques. Focus on understanding both the abstract model and its concrete implementations.`;
+
+  const [qi,setQi]=useState(0);
+  const [qa,setQa]=useState(null);
+  const [sc,setSc]=useState(0);
+  const [done,setDone]=useState(false);
+  const [fi,setFi]=useState(0);
+  const [flip,setFlip]=useState(false);
+
+  const answer=idx=>{
+    if(qa!==null)return;
+    setQa(idx);
+    if(idx===quiz[qi].ans)setSc(s=>s+1);
+    setTimeout(()=>{
+      if(qi<quiz.length-1){setQi(q=>q+1);setQa(null);}
+      else setDone(true);
+    },1050);
+  };
+
+  return(
+    <div style={{animation:'fadeIn .22s ease'}}>
+      <button className="btn bg" style={{marginBottom:16}} onClick={onBack}>← Back to {topic}</button>
+      <div className="card">
+        <div style={{display:'flex',alignItems:'center',gap:13,marginBottom:18,paddingBottom:15,borderBottom:'1px solid var(--b1)'}}>
+          <div className="ri-ic" style={{background:res.color,width:46,height:46,borderRadius:11,fontSize:21}}>{res.icon}</div>
+          <div><div style={{fontSize:17,fontWeight:800}}>{res.label}</div><div style={{fontSize:12,color:'var(--t3)',marginTop:2}}>{topic}</div></div>
+          <span className={`badge ${res.bc}`} style={{marginLeft:'auto'}}>{res.badge}</span>
+        </div>
+
+        {type==='notes'&&(
+          <div>
+            <div className="ai-box" style={{marginBottom:15}}>
+              <div className="ai-h"><div className="ai-d"/><span className="ai-l">Study Notes</span></div>
+              <div className="ai-body">
+                <strong style={{color:'var(--t1)',display:'block',marginBottom:9}}>Overview</strong>
+                {summ}
+                <br/><br/>
+                <strong style={{color:'var(--t1)',display:'block',marginBottom:9}}>Exam Preparation Tips</strong>
+                🔹 Analyse time and space complexity before coding<br/>
+                🔹 Draw diagrams for trees, graphs, and memory layouts<br/>
+                🔹 Test edge cases: empty input, single element, max size<br/>
+                🔹 Review previous-year questions for recurring patterns<br/>
+                🔹 Implement each core operation from scratch at least once
+              </div>
+            </div>
+            <div style={{display:'flex',gap:9,flexWrap:'wrap'}}>
+              <button className="btn bg" onClick={()=>toast('Notes downloading…','success')}>⬇️ Download PDF</button>
+              <button className="btn bt" onClick={()=>toast('Added to bookmarks','info')}>🔖 Bookmark</button>
+              <button className="btn bd" onClick={()=>toast('Shared link copied','info')}>🔗 Share</button>
+            </div>
+          </div>
+        )}
+
+        {type==='video'&&(
+          <div>
+            <div style={{background:'var(--s2)',borderRadius:'var(--r)',border:'1px solid var(--b2)',padding:'52px 18px',textAlign:'center',marginBottom:14}}>
+              <div style={{fontSize:50,marginBottom:12}}>▶️</div>
+              <div style={{fontWeight:800,fontSize:16,marginBottom:5}}>Lecture: {topic}</div>
+              <div style={{fontSize:12,color:'var(--t3)',marginBottom:18}}>42 min · HD Quality · English subtitles available</div>
+              <button className="btn bp" onClick={()=>toast('Opening video player…','info')}>▶ Watch Lecture</button>
+            </div>
+            <div className="ct" style={{marginBottom:11}}>Related Videos</div>
+            {['Introduction & Motivation','Deep Dive: Core Operations','Problem Solving Session','Interview Q&A Walkthrough'].map((v,i)=>(
+              <div key={i} className="ri" onClick={()=>toast(`Opening: ${v}`,'info')}>
+                <div className="ri-ic" style={{background:'rgba(244,63,94,.14)'}}>🎥</div>
+                <div className="ri-b"><div className="ri-n">{v} — {topic}</div><div className="ri-m">{15+i*9} min · HD</div></div>
+                <button className="btn btn-xs br">Watch</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {type==='pyq'&&(
+          <div>
+            <div className="ct" style={{marginBottom:13}}>Previous Year Questions — {topic}</div>
+            {[2023,2022,2021,2020,2019].map((yr,i)=>(
+              <div key={yr} className="ri" onClick={()=>toast(`Downloading ${yr} paper…`,'success')}>
+                <div className="ri-ic" style={{background:'rgba(251,191,36,.14)'}}>📝</div>
+                <div className="ri-b">
+                  <div className="ri-n">{yr} — Mid Sem & End Sem Combined</div>
+                  <div className="ri-m">{7+i*2} questions · {['Medium','Hard','Medium','Easy','Hard'][i]} · {['2 Marks','5 Marks','Mix','2 Marks','10 Marks'][i]}</div>
+                </div>
+                <button className="btn btn-xs ba">⬇️ PDF</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {type==='flash'&&(
+          <div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+              <span style={{fontSize:13,color:'var(--t3)'}}>Card {fi+1} of {cards.length}</span>
+              <div style={{display:'flex',gap:7}}>
+                <button className="btn btn-sm bd" disabled={fi===0} onClick={()=>{setFi(i=>i-1);setFlip(false);}}>‹ Prev</button>
+                <button className="btn btn-sm bd" disabled={fi===cards.length-1} onClick={()=>{setFi(i=>i+1);setFlip(false);}}>Next ›</button>
+              </div>
+            </div>
+            <div className="pb" style={{marginBottom:14}}><div className="pf" style={{width:((fi+1)/cards.length*100)+'%'}}/></div>
+            <div className="fcw" onClick={()=>setFlip(f=>!f)} style={{minHeight:210}}>
+              <div className={`fc${flip?' fl':''}`} style={{minHeight:210}}>
+                <div className="fcf fc-front">
+                  <div className="fct" style={{color:'var(--blue)'}}>❓ Question</div>
+                  <div className="fcq">{cards[fi].q}</div>
+                  <div className="fch">Click card to reveal answer</div>
+                </div>
+                <div className="fcf fc-back">
+                  <div className="fct" style={{color:'var(--teal)'}}>✅ Answer</div>
+                  <div className="fca">{cards[fi].a}</div>
+                  <div className="fch">Click to return to question</div>
+                </div>
+              </div>
+            </div>
+            <div style={{display:'flex',gap:9,marginTop:12,justifyContent:'center'}}>
+              {['😐 Revisit','🙂 Got it','😄 Mastered'].map((lb,i)=>(
+                <button key={i} className="btn btn-sm bd" onClick={()=>{toast(lb.split(' ')[1]+' recorded','info');if(fi<cards.length-1){setFi(f=>f+1);setFlip(false);}}}>{lb}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {type==='ai'&&(
+          <div>
+            <div className="ai-box" style={{marginBottom:15}}>
+              <div className="ai-h"><div className="ai-d"/><span className="ai-l">AI-Generated Summary</span></div>
+              <div className="ai-body">{summ}</div>
+            </div>
+            <div style={{fontWeight:600,fontSize:13,marginBottom:9,color:'var(--t2)'}}>Follow-up prompts:</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:7}}>
+              {['Explain with examples','Give 5 practice problems','Compare with alternatives','Mind map outline','Exam tips'].map(q=>(
+                <button key={q} className="btn btn-sm bg" onClick={()=>toast('Generating response…','info')}>{q}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {type==='quiz'&&(
+          <div>
+            {done?(
+              <div style={{textAlign:'center',padding:'28px 0',animation:'popIn .35s ease'}}>
+                <div style={{fontSize:50,marginBottom:11}}>🏆</div>
+                <div style={{fontSize:29,fontWeight:800,color:'var(--amber)',marginBottom:5}}>{sc}/{quiz.length}</div>
+                <div style={{color:'var(--t2)',marginBottom:8,fontSize:14}}>
+                  {sc===quiz.length?'Perfect! Outstanding work!':sc>=quiz.length*.7?'Great job! Review the ones you missed.':sc>=quiz.length*.4?'Keep practising — progress is visible!':'Review the notes and give it another shot.'}
+                </div>
+                <div className="pb" style={{maxWidth:180,margin:'0 auto 18px'}}><div className="pf" style={{width:(sc/quiz.length*100)+'%'}}/></div>
+                <div style={{display:'flex',gap:9,justifyContent:'center'}}>
+                  <button className="btn bp" onClick={()=>{setQi(0);setQa(null);setSc(0);setDone(false);}}>🔄 Retry</button>
+                  <button className="btn bg" onClick={onBack}>← Back</button>
+                </div>
+              </div>
+            ):(
+              <div>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:5}}>
+                  <span style={{color:'var(--t3)'}}>Question {qi+1} / {quiz.length}</span>
+                  <span style={{color:'var(--blue)',fontWeight:700}}>Score: {sc}</span>
+                </div>
+                <div className="pb" style={{marginBottom:18}}><div className="pf" style={{width:(qi/quiz.length*100)+'%'}}/></div>
+                <div style={{fontWeight:700,fontSize:15,marginBottom:18,lineHeight:1.5}}>{quiz[qi].q}</div>
+                {quiz[qi].opts.map((op,i)=>(
+                  <button key={i} disabled={qa!==null} className={`qo${qa===i?(i===quiz[qi].ans?' correct':' wrong'):qa!==null&&i===quiz[qi].ans?' correct':''}`} onClick={()=>answer(i)}>
+                    <span className="qol">{['A','B','C','D'][i]}</span>
+                    {op}
+                    {qa!==null&&i===quiz[qi].ans&&<span style={{marginLeft:'auto'}}>✅</span>}
+                    {qa===i&&i!==quiz[qi].ans&&<span style={{marginLeft:'auto'}}>❌</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── STUDENT ─── */
+function StudentApp({user,page,setPage}){
+  const [sub,setSub]=useState(null);
+  const [unit,setUnit]=useState(null);
+  const [topic,setTopic]=useState(null);
+  const [res,setRes]=useState(null);
+
+  if(page==='announce')return <AnnouncePage/>;
+  if(page==='settings')return <SettingsPage user={user}/>;
+  if(page==='progress')return <ProgressPage user={user}/>;
+  if(page==='schedule')return <SchedulePage/>;
+
+  if(page==='dashboard')return(
+    <div className="page">
+      <div className="ph">
+        <div><div className="ph-t">Welcome back, {user.name.split(' ')[0]} 👋</div><div className="ph-s">{user.year} · {user.branch} · Semester 4</div></div>
+        <div className="ph-r"><button className="nbtn">🔔<div className="ndot"/></button></div>
+      </div>
+      <div className="sg">
+        {[{ic:'📚',v:'6',l:'Enrolled',tr:'All active',c:'var(--blue)'},{ic:'⭐',v:'82%',l:'Avg Score',tr:'↑ +5% this month',c:'var(--teal)'},{ic:'📝',v:'14',l:'Viewed',tr:'This week',c:'var(--amber)'},{ic:'🏆',v:'3',l:'Quizzes Done',tr:'Keep going!',c:'var(--rose)'}].map((s,i)=>(
+          <div key={i} className="sc"><div className="sc-ac" style={{background:s.c}}/><div className="sc-ic">{s.ic}</div><div className="sc-v">{s.v}</div><div className="sc-l">{s.l}</div><div className="sc-tr" style={{color:s.c}}>{s.tr}</div></div>
+        ))}
+      </div>
+      <div className="g2" style={{alignItems:'start'}}>
+        <div>
+          <div className="card">
+            <div className="ch"><div className="ct">Continue Learning</div><button className="btn btn-xs bg" onClick={()=>setPage('subjects')}>View All →</button></div>
+            {[{s:'Data Structures',u:'Unit 4',t:'AVL Trees',p:68},{s:'DBMS',u:'Unit 3',t:'SQL Joins',p:42},{s:'Operating Systems',u:'Unit 2',t:'CPU Scheduling',p:85}].map((it,i)=>(
+              <div key={i} style={{marginBottom:15,cursor:'pointer'}} onClick={()=>setPage('subjects')}>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:3}}><span style={{fontWeight:600}}>{it.t}</span><span style={{color:'var(--blue)',fontWeight:700}}>{it.p}%</span></div>
+                <div style={{fontSize:11,color:'var(--t3)',marginBottom:5}}>{it.s} · {it.u}</div>
+                <div className="pb"><div className="pf" style={{width:it.p+'%'}}/></div>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="ch"><div className="ct">📣 Announcements</div><button className="btn btn-xs bg" onClick={()=>setPage('announce')}>All →</button></div>
+            {['Mid-Sem Exam Schedule Released','New DBMS Resources Added','Guest Lecture on April 5'].map((a,i)=>(
+              <div key={i} style={{display:'flex',gap:9,padding:'8px 0',borderBottom:'1px solid var(--b1)',cursor:'pointer'}} onClick={()=>setPage('announce')}>
+                <span>📢</span><span style={{fontSize:13,color:'var(--t2)'}}>{a}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="card">
+            <div className="ch"><div className="ct">🔥 Streak & Goals</div></div>
+            <div style={{textAlign:'center',padding:'8px 0 16px'}}>
+              <div style={{fontSize:54,fontWeight:800,background:'linear-gradient(135deg,var(--amber),var(--rose))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',lineHeight:1.1}}>7</div>
+              <div style={{fontSize:13,color:'var(--t2)'}}>Day Learning Streak 🔥</div>
+            </div>
+            {[{l:'Daily Goal',d:2,t:3},{l:'Weekly Quizzes',d:3,t:5},{l:'Topics Reviewed',d:8,t:10}].map((g,i)=>(
+              <div key={i} style={{marginBottom:13}}>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:12,color:'var(--t3)',marginBottom:4}}><span>{g.l}</span><span style={{color:'var(--blue)',fontWeight:700}}>{g.d}/{g.t}</span></div>
+                <div className="pb"><div className="pf" style={{width:(g.d/g.t*100)+'%'}}/></div>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="ch"><div className="ct">🗓️ Today's Classes</div><button className="btn btn-xs bg" onClick={()=>setPage('schedule')}>Timetable →</button></div>
+            {[{ti:'9:00 AM',s:'Data Structures',r:'CS-301',st:'Upcoming'},{ti:'11:00 AM',s:'DBMS Lab',r:'CS-Lab-2',st:'Done'},{ti:'2:00 PM',s:'Mathematics',r:'LH-104',st:'Upcoming'}].map((c,i)=>(
+              <div key={i} style={{display:'flex',gap:11,padding:'8px 0',borderBottom:'1px solid var(--b1)'}}>
+                <div style={{fontFamily:'var(--fm)',fontSize:11,color:'var(--blue)',minWidth:62,paddingTop:2}}>{c.ti}</div>
+                <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600}}>{c.s}</div><div style={{fontSize:11,color:'var(--t3)'}}>{c.r}</div></div>
+                <span className={`badge ${c.st==='Done'?'bbt':'bb'}`}>{c.st}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if(page==='subjects'){
+    if(res)return <div className="page"><ResViewer topic={topic} type={res} onBack={()=>setRes(null)}/></div>;
+    if(topic)return(
+      <div className="page">
+        <div className="bc">
+          <span className="bcl" onClick={()=>{setSub(null);setUnit(null);setTopic(null);}}>Subjects</span><span>›</span>
+          <span className="bcl" onClick={()=>{setUnit(null);setTopic(null);}}>{sub}</span><span>›</span>
+          <span className="bcl" onClick={()=>setTopic(null)}>{unit}</span><span>›</span><span style={{color:'var(--t2)'}}>{topic}</span>
+        </div>
+        <div className="ph-t" style={{marginBottom:3}}>{topic}</div>
+        <div className="ph-s" style={{marginBottom:18}}>Choose a resource type to start learning</div>
+        {RES_TYPES.map(r=>(
+          <div key={r.id} className="ri" onClick={()=>setRes(r.id)}>
+            <div className="ri-ic" style={{background:r.color}}>{r.icon}</div>
+            <div className="ri-b"><div className="ri-n">{r.label}</div><div className="ri-m">{topic} · Updated recently</div></div>
+            <span className={`badge ${r.bc}`}>{r.badge}</span>
+            <span style={{color:'var(--t3)',fontSize:16}}>›</span>
+          </div>
+        ))}
+      </div>
+    );
+    if(unit)return(
+      <div className="page">
+        <div className="bc">
+          <span className="bcl" onClick={()=>{setSub(null);setUnit(null);setTopic(null);}}>Subjects</span><span>›</span>
+          <span className="bcl" onClick={()=>setUnit(null)}>{sub}</span><span>›</span><span style={{color:'var(--t2)'}}>{unit}</span>
+        </div>
+        <div className="ph-t" style={{marginBottom:14}}>{unit} — Topics</div>
+        <div className="chips" style={{display:'flex',flexWrap:'wrap',gap:8}}>
+          {(TOPICS[unit]||['Introduction','Core Concepts','Applications','Practice']).map(t=>(
+            <button key={t} style={{padding:'7px 15px',border:'1px solid var(--b1)',borderRadius:20,background:'var(--s2)',color:'var(--t2)',cursor:'pointer',fontSize:13,fontWeight:500,transition:'.16s'}}
+              onClick={()=>setTopic(t)}
+              onMouseEnter={e=>{e.target.style.borderColor='var(--blue)';e.target.style.color='var(--blue)';}}
+              onMouseLeave={e=>{e.target.style.borderColor='var(--b1)';e.target.style.color='var(--t2)';}}
+            >{t}</button>
+          ))}
+        </div>
+      </div>
+    );
+    if(sub){
+      const sj=SUBJECTS.find(x=>x.name===sub);
+      return(
+        <div className="page">
+          <div className="bc"><span className="bcl" onClick={()=>setSub(null)}>Subjects</span><span>›</span><span style={{color:'var(--t2)'}}>{sub}</span></div>
+          <div className="ph-t" style={{marginBottom:14}}>{sub} — Units</div>
+          <div className="gauto">
+            {(UNITS[sj?.id]||[]).map(u=>(
+              <div key={u} className="sjc" onClick={()=>setUnit(u)}>
+                <div style={{fontSize:22,marginBottom:9}}>📂</div>
+                <div className="sjc-n">{u}</div>
+                <div className="sjc-m" style={{marginTop:3}}>{TOPICS[u]?.length||4} Topics</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return(
+      <div className="page">
+        <div className="ph"><div><div className="ph-t">My Subjects</div><div className="ph-s">Select a subject to browse units, topics and resources</div></div></div>
+        <div className="gauto">
+          {SUBJECTS.map((s,i)=>(
+            <div key={s.id} className="sjc" onClick={()=>setSub(s.name)} style={{animationDelay:i*.05+'s',animation:'fadeUp .3s ease both'}}>
+              <div className="sjc-glow" style={{background:s.color}}/>
+              <div className="sjc-em">{s.emoji}</div>
+              <div className="sjc-n">{s.name}</div>
+              <div className="sjc-m">{s.units} Units · {s.topics} Topics</div>
+              <div className="sjc-p">
+                <div className="sjc-pl"><span>Progress</span><span style={{color:s.color,fontWeight:700}}>{s.progress}%</span></div>
+                <div className="pb"><div className="pf" style={{width:s.progress+'%',background:s.color}}/></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
+function ProgressPage({user}){
+  return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">My Progress</div><div className="ph-s">Across all enrolled subjects</div></div></div>
+      <div className="sg" style={{gridTemplateColumns:'repeat(3,1fr)'}}>
+        {[{ic:'📚',v:'6',l:'Subjects',c:'var(--blue)'},{ic:'✅',v:'38',l:'Topics Done',c:'var(--teal)'},{ic:'📊',v:'82%',l:'Avg Score',c:'var(--amber)'}].map((s,i)=>(
+          <div key={i} className="sc"><div className="sc-ac" style={{background:s.c}}/><div className="sc-ic">{s.ic}</div><div className="sc-v">{s.v}</div><div className="sc-l">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="ch"><div className="ct">Subject-wise Progress</div></div>
+        {SUBJECTS.map(s=>(
+          <div key={s.id} style={{marginBottom:15}}>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:4}}><span style={{fontWeight:600}}>{s.emoji} {s.name}</span><span style={{color:s.color,fontWeight:700}}>{s.progress}%</span></div>
+            <div className="pb"><div className="pf" style={{width:s.progress+'%',background:s.color}}/></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SchedulePage(){
+  const sched={
+    Mon:['Data Structures\n9:00 AM · CS-301','OS Lab\n11:00 AM · CS-Lab','Mathematics\n2:00 PM · LH-104'],
+    Tue:['DBMS\n9:00 AM · CS-202','Software Engg\n11:00 AM · CS-301','Networks\n3:00 PM · CS-202'],
+    Wed:['Data Structures\n10:00 AM · CS-301','DBMS Lab\n12:00 PM · CS-Lab'],
+    Thu:['OS\n9:00 AM · CS-202','Mathematics\n11:00 AM · LH-104','SE\n2:00 PM · CS-301'],
+    Fri:['Networks\n9:00 AM · CS-202','Library\n11:00 AM · Library','Tutorial\n2:00 PM · CS-301'],
+  };
+  return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Weekly Timetable</div><div className="ph-s">Semester 4 · CSE</div></div></div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:11}}>
+        {Object.entries(sched).map(([d,cls])=>(
+          <div key={d} className="card" style={{padding:14}}>
+            <div style={{fontWeight:800,marginBottom:12,color:'var(--blue)',fontSize:14}}>{d}</div>
+            {cls.map((c,i)=>{const[s,m]=c.split('\n');return(
+              <div key={i} style={{padding:'7px 9px',background:'var(--s2)',borderRadius:7,marginBottom:7,borderLeft:'3px solid var(--blue)'}}>
+                <div style={{fontSize:12,fontWeight:600}}>{s}</div>
+                <div style={{fontSize:10,color:'var(--t3)',marginTop:1}}>{m}</div>
+              </div>
+            );})}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── FACULTY ─── */
+function FacultyApp({user,page,setPage}){
+  const {toast}=useCtx();
+  const [uploads,setUploads]=useState([
+    {id:1,name:'DS Arrays Notes.pdf',sub:'Data Structures',unit:'Unit 1 – Arrays & Strings',cls:'CSE-A',date:'2 days ago',views:84,type:'PDF Notes'},
+    {id:2,name:'DBMS SQL Practice Set.pdf',sub:'DBMS',unit:'Unit 3 – SQL',cls:'CSE-B',date:'4 days ago',views:126,type:'PDF Notes'},
+    {id:3,name:'OS Scheduling Lecture.mp4',sub:'Operating Systems',unit:'Unit 2 – Process Management',cls:'CSE-A',date:'1 week ago',views:203,type:'Video'},
+  ]);
+  const [cls,setCls]=useState('');
+  const [sub,setSub]=useState('');
+  const [unitSel,setUnitSel]=useState('');
+  const [topicSel,setTopicSel]=useState('');
+  const [fname,setFname]=useState('');
+  const [ftype,setFtype]=useState('');
+
+  const doUpload=()=>{
+    if(!cls||!sub||!unitSel||!topicSel||!fname||!ftype){toast('Please fill all fields before uploading','error');return;}
+    const u={id:Date.now(),name:`${topicSel} – ${fname}`,sub,unit:unitSel,cls,date:'Just now',views:0,type:ftype};
+    setUploads(arr=>[u,...arr]);
+    toast(`"${u.name}" uploaded successfully!`,'success');
+    setCls('');setSub('');setUnitSel('');setTopicSel('');setFname('');setFtype('');
+  };
+  const del=id=>{setUploads(arr=>arr.filter(x=>x.id!==id));toast('Resource deleted','info');};
+
+  if(page==='announce')return <AnnouncePage/>;
+  if(page==='settings')return <SettingsPage user={user}/>;
+  if(page==='resources')return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Resource Library</div><div className="ph-s">{uploads.length} resources</div></div></div>
+      <div className="card">
+        {uploads.length===0?<div className="empty"><div className="ei">📁</div><div className="et">No resources yet</div><div className="es">Upload from the Upload page</div></div>
+          :uploads.map(u=>(
+            <div key={u.id} className="ri">
+              <div className="ri-ic" style={{background:'rgba(79,142,247,.13)'}}>{u.type==='Video'?'🎥':'📄'}</div>
+              <div className="ri-b"><div className="ri-n">{u.name}</div><div className="ri-m">{u.sub} · {u.cls} · {u.date} · 👁 {u.views}</div></div>
+              <span className="badge bbt">Live</span>
+              <button className="btn btn-xs br" onClick={()=>del(u.id)}>🗑</button>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+  if(page==='classes')return(
+    <div className="page">
+      <div className="ph"><div className="ph-t">My Classes</div></div>
+      <div className="gauto">{CLASSES.map((c,i)=>(
+        <div key={c} className="card" style={{cursor:'pointer'}} onClick={()=>toast(`Opening ${c}…`,'info')}>
+          <div style={{fontSize:26,marginBottom:9}}>👥</div>
+          <div style={{fontWeight:700,fontSize:15,marginBottom:3}}>{c}</div>
+          <div style={{fontSize:12,color:'var(--t3)',marginBottom:11}}>{55+i*5} Students · {SUBJECTS[i%SUBJECTS.length].name}</div>
+          <button className="btn btn-sm bg">View →</button>
+        </div>
+      ))}</div>
+    </div>
+  );
+  if(page==='dashboard')return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Faculty Dashboard</div><div className="ph-s">{user.dept} · {user.name}</div></div><button className="btn bp" onClick={()=>setPage('upload')}>⬆️ Upload</button></div>
+      <div className="sg">
+        {[{ic:'👥',v:CLASSES.length,l:'Classes',c:'var(--blue)'},{ic:'📁',v:uploads.length,l:'Uploads',c:'var(--teal)'},{ic:'📊',v:uploads.reduce((a,b)=>a+b.views,0),l:'Total Views',c:'var(--amber)'},{ic:'📝',v:'6',l:'Pending',c:'var(--rose)'}].map((s,i)=>(
+          <div key={i} className="sc"><div className="sc-ac" style={{background:s.c}}/><div className="sc-ic">{s.ic}</div><div className="sc-v">{s.v}</div><div className="sc-l">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="g2" style={{alignItems:'start'}}>
+        <div className="card">
+          <div className="ch"><div className="ct">Recent Uploads</div><button className="btn btn-xs bg" onClick={()=>setPage('resources')}>All →</button></div>
+          {uploads.length===0?<div className="empty" style={{padding:20}}><div className="ei">📁</div><div className="et">No uploads yet</div></div>:uploads.slice(0,4).map(u=>(
+            <div key={u.id} className="ri">
+              <div className="ri-ic" style={{background:'rgba(79,142,247,.13)'}}>{u.type==='Video'?'🎥':'📄'}</div>
+              <div className="ri-b"><div className="ri-n">{u.name}</div><div className="ri-m">{u.sub} · {u.date} · 👁 {u.views}</div></div>
+              <button className="btn btn-xs bg">Edit</button>
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="ct" style={{marginBottom:15}}>Quick Upload</div>
+          <div className="fl2"><label>Class</label><select className="sel" value={cls} onChange={e=>setCls(e.target.value)}><option value="">Select</option>{CLASSES.map(c=><option key={c}>{c}</option>)}</select></div>
+          <div className="fl2"><label>Subject</label><select className="sel" value={sub} onChange={e=>{setSub(e.target.value);setUnitSel('');setTopicSel('');}} disabled={!cls}><option value="">Select</option>{SUBJECTS.map(s=><option key={s.id} value={s.name}>{s.name}</option>)}</select></div>
+          {sub&&<div className="fl2"><label>Unit</label><select className="sel" value={unitSel} onChange={e=>{setUnitSel(e.target.value);setTopicSel('');}}><option value="">Select</option>{(UNITS[SUBJECTS.find(x=>x.name===sub)?.id]||[]).map(u=><option key={u}>{u}</option>)}</select></div>}
+          {unitSel&&<div className="fl2"><label>Topic</label><select className="sel" value={topicSel} onChange={e=>setTopicSel(e.target.value)}><option value="">Select</option>{(TOPICS[unitSel]||[]).map(t=><option key={t}>{t}</option>)}</select></div>}
+          {topicSel&&<>
+            <div className="fl2"><label>Resource Name</label><input className="inp" placeholder="e.g. Complete Notes, Practice Set…" value={fname} onChange={e=>setFname(e.target.value)}/></div>
+            <div className="fl2"><label>Type</label><select className="sel" value={ftype} onChange={e=>setFtype(e.target.value)}><option value="">Select</option>{['PDF Notes','Video','PYQ Set','Assignment','Important Questions','Slide Deck'].map(t=><option key={t}>{t}</option>)}</select></div>
+            <button className="btn bp" style={{width:'100%',justifyContent:'center'}} onClick={doUpload}>⬆️ Upload Now</button>
+          </>}
+          {!topicSel&&<div style={{textAlign:'center',fontSize:12,color:'var(--t4)',marginTop:6}}>Complete selection above</div>}
+        </div>
+      </div>
+    </div>
+  );
+  if(page==='upload')return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Upload Resources</div><div className="ph-s">Add study materials for students</div></div></div>
+      <div className="g2" style={{alignItems:'start'}}>
+        <div className="card">
+          <div className="ct" style={{marginBottom:16}}>Target</div>
+          <div className="fl2"><label>Class</label><select className="sel" value={cls} onChange={e=>setCls(e.target.value)}><option value="">Select class</option>{CLASSES.map(c=><option key={c}>{c}</option>)}</select></div>
+          <div className="fl2"><label>Subject</label><select className="sel" value={sub} onChange={e=>{setSub(e.target.value);setUnitSel('');setTopicSel('');}} disabled={!cls}><option value="">Select subject</option>{SUBJECTS.map(s=><option key={s.id} value={s.name}>{s.name}</option>)}</select></div>
+          <div className="fl2"><label>Unit</label><select className="sel" value={unitSel} onChange={e=>{setUnitSel(e.target.value);setTopicSel('');}} disabled={!sub}><option value="">Select unit</option>{(UNITS[SUBJECTS.find(x=>x.name===sub)?.id]||[]).map(u=><option key={u}>{u}</option>)}</select></div>
+          <div className="fl2"><label>Topic</label><select className="sel" value={topicSel} onChange={e=>setTopicSel(e.target.value)} disabled={!unitSel}><option value="">Select topic</option>{(TOPICS[unitSel]||[]).map(t=><option key={t}>{t}</option>)}</select></div>
+        </div>
+        <div className="card">
+          <div className="ct" style={{marginBottom:16}}>Resource Details</div>
+          <div className="fl2"><label>Name</label><input className="inp" placeholder="e.g. Complete Notes, Practice Set…" value={fname} onChange={e=>setFname(e.target.value)} disabled={!topicSel}/></div>
+          <div className="fl2"><label>Type</label><select className="sel" value={ftype} onChange={e=>setFtype(e.target.value)} disabled={!topicSel}><option value="">Select type</option>{['PDF Notes','Video','PYQ Set','Assignment','Important Questions','Slide Deck'].map(t=><option key={t}>{t}</option>)}</select></div>
+          {topicSel&&<div className="uz" style={{marginBottom:14}} onClick={()=>toast('File browser opened (demo)','info')}><div className="uz-ic">📁</div><div className="uz-t">Click to select file</div><div className="uz-s">PDF, DOCX, MP4, PPTX — Max 50 MB</div></div>}
+          <button className="btn bp" style={{width:'100%',justifyContent:'center'}} onClick={doUpload}>⬆️ Upload Resource</button>
+          {!topicSel&&<div style={{textAlign:'center',fontSize:12,color:'var(--t4)',marginTop:7}}>Complete target selection first</div>}
+        </div>
+      </div>
+      {uploads.length>0&&(
+        <div className="card">
+          <div className="ch"><div className="ct">Upload History</div><span className="badge bb">{uploads.length}</span></div>
+          {uploads.map(u=>(
+            <div key={u.id} className="ri">
+              <div className="ri-ic" style={{background:'rgba(6,214,160,.11)'}}>✅</div>
+              <div className="ri-b"><div className="ri-n">{u.name}</div><div className="ri-m">{u.sub} · {u.cls} · {u.date}</div></div>
+              <button className="btn btn-xs br" onClick={()=>del(u.id)}>🗑 Delete</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+  return null;
+}
+
+/* ─── ADMIN ─── */
+function AdminApp({user,page,setPage}){
+  const {toast}=useCtx();
+  const [users,setUsers]=useState([
+    {id:1,name:'Arjun Sharma',role:'Student',branch:'CSE',email:'arjun@augnana.edu',status:'Active',joined:'Jan 2024'},
+    {id:2,name:'Dr. Priya Nair',role:'Faculty',branch:'CS Dept',email:'priya@augnana.edu',status:'Active',joined:'Aug 2020'},
+    {id:3,name:'Kavya Reddy',role:'Student',branch:'AIML',email:'kavya@augnana.edu',status:'Active',joined:'Jan 2024'},
+    {id:4,name:'Prof. Suresh Kumar',role:'Faculty',branch:'IT Dept',email:'suresh@augnana.edu',status:'Inactive',joined:'Jul 2018'},
+    {id:5,name:'Ravi Teja',role:'Student',branch:'CSE',email:'ravi@augnana.edu',status:'Active',joined:'Jan 2024'},
+    {id:6,name:'Meena Rao',role:'Student',branch:'ECE',email:'meena@augnana.edu',status:'Active',joined:'Jan 2023'},
+  ]);
+  const [usearch,setUsearch]=useState('');
+  const [rsearch,setRsearch]=useState('');
+  const [showAdd,setShowAdd]=useState(false);
+  const [nu,setNu]=useState({name:'',email:'',role:'Student',branch:'',status:'Active'});
+
+  const allRes=[
+    {id:1,name:'DS Arrays Notes',sub:'Data Structures',unit:'Unit 1',by:'Dr. Priya',views:234,date:'2d ago'},
+    {id:2,name:'OS Scheduling PDF',sub:'Operating Systems',unit:'Unit 2',by:'Prof. Suresh',views:189,date:'5d ago'},
+    {id:3,name:'DBMS SQL Guide',sub:'DBMS',unit:'Unit 3',by:'Dr. Priya',views:312,date:'1w ago'},
+    {id:4,name:'SE SDLC Notes',sub:'Software Engineering',unit:'Unit 1',by:'Prof. Ramu',views:97,date:'2w ago'},
+    {id:5,name:'Math Calculus PDF',sub:'Mathematics',unit:'Unit 1',by:'Dr. Lakshmi',views:156,date:'3w ago'},
+  ];
+
+  const fu=users.filter(u=>u.name.toLowerCase().includes(usearch.toLowerCase())||u.email.toLowerCase().includes(usearch.toLowerCase()));
+  const fr=allRes.filter(r=>r.name.toLowerCase().includes(rsearch.toLowerCase())||r.sub.toLowerCase().includes(rsearch.toLowerCase()));
+
+  const addUser=()=>{
+    if(!nu.name||!nu.email){toast('Name and email required','error');return;}
+    setUsers(arr=>[...arr,{...nu,id:Date.now(),joined:'Mar 2026'}]);
+    toast(`${nu.name} added!`,'success');
+    setShowAdd(false);setNu({name:'',email:'',role:'Student',branch:'',status:'Active'});
+  };
+  const toggleStatus=id=>{setUsers(arr=>arr.map(x=>x.id===id?{...x,status:x.status==='Active'?'Inactive':'Active'}:x));toast('Status updated','info');};
+  const delUser=id=>{setUsers(arr=>arr.filter(x=>x.id!==id));toast('User removed','info');};
+
+  if(page==='announce')return <AnnouncePage/>;
+  if(page==='settings')return <SettingsPage user={user}/>;
+  if(page==='users')return(
+    <div className="page">
+      <div className="ph">
+        <div><div className="ph-t">User Management</div><div className="ph-s">{users.length} users</div></div>
+        <div className="ph-r">
+          <div className="sw"><span className="si">🔍</span><input className="inp" style={{paddingLeft:28,minWidth:200}} placeholder="Search…" value={usearch} onChange={e=>setUsearch(e.target.value)}/></div>
+          <button className="btn bp" onClick={()=>setShowAdd(true)}>+ Add User</button>
+        </div>
+      </div>
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        <table className="tbl">
+          <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody>{fu.map(u=>(
+            <tr key={u.id}>
+              <td style={{color:'var(--t1)',fontWeight:600}}>{u.name}</td>
+              <td><span className={`badge ${u.role==='Faculty'?'bbt':'bb'}`}>{u.role}</span></td>
+              <td>{u.branch}</td>
+              <td style={{fontFamily:'var(--fm)',fontSize:12}}>{u.email}</td>
+              <td><span className={`badge ${u.status==='Active'?'bbt':'bbr'}`}>{u.status}</span></td>
+              <td style={{fontSize:12,color:'var(--t3)'}}>{u.joined}</td>
+              <td><div style={{display:'flex',gap:5}}>
+                <button className="btn btn-xs bg" onClick={()=>toggleStatus(u.id)}>{u.status==='Active'?'Disable':'Enable'}</button>
+                <button className="btn btn-xs br" onClick={()=>delUser(u.id)}>🗑</button>
+              </div></td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+      {showAdd&&(
+        <div className="mov" onClick={e=>e.target===e.currentTarget&&setShowAdd(false)}>
+          <div className="modal">
+            <div className="modal-t">Add New User</div>
+            <button className="modal-x" onClick={()=>setShowAdd(false)}>✕</button>
+            <div className="fl2"><label>Full Name</label><input className="inp" value={nu.name} onChange={e=>setNu(u=>({...u,name:e.target.value}))} placeholder="Full name"/></div>
+            <div className="fl2"><label>Email</label><input className="inp" type="email" value={nu.email} onChange={e=>setNu(u=>({...u,email:e.target.value}))} placeholder="email@augnana.edu"/></div>
+            <div className="g2">
+              <div className="fl2"><label>Role</label><select className="sel" value={nu.role} onChange={e=>setNu(u=>({...u,role:e.target.value}))}>{['Student','Faculty','Admin'].map(r=><option key={r}>{r}</option>)}</select></div>
+              <div className="fl2"><label>Branch / Dept</label><input className="inp" value={nu.branch} onChange={e=>setNu(u=>({...u,branch:e.target.value}))} placeholder="e.g. CSE"/></div>
+            </div>
+            <div style={{display:'flex',gap:9,marginTop:4}}>
+              <button className="btn bp" style={{flex:1,justifyContent:'center'}} onClick={addUser}>Add User</button>
+              <button className="btn bd" onClick={()=>setShowAdd(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+  if(page==='resources')return(
+    <div className="page">
+      <div className="ph">
+        <div><div className="ph-t">All Resources</div><div className="ph-s">{allRes.length} resources</div></div>
+        <div className="sw"><span className="si">🔍</span><input className="inp" style={{paddingLeft:28,minWidth:200}} placeholder="Search…" value={rsearch} onChange={e=>setRsearch(e.target.value)}/></div>
+      </div>
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        <table className="tbl">
+          <thead><tr><th>Resource</th><th>Subject</th><th>Unit</th><th>Uploaded By</th><th>Views</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>{fr.map(r=>(
+            <tr key={r.id}>
+              <td style={{color:'var(--t1)',fontWeight:600}}>📄 {r.name}</td>
+              <td>{r.sub}</td>
+              <td style={{fontSize:12,color:'var(--t3)'}}>{r.unit}</td>
+              <td>{r.by}</td>
+              <td>👁 {r.views}</td>
+              <td style={{fontSize:12,color:'var(--t3)'}}>{r.date}</td>
+              <td><div style={{display:'flex',gap:5}}>
+                <button className="btn btn-xs bg" onClick={()=>toast('Edit (demo)','info')}>Edit</button>
+                <button className="btn btn-xs br" onClick={()=>toast('Resource removed','info')}>🗑</button>
+              </div></td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+  /* ADMIN DASHBOARD */
+  const activity=[
+    {t:'Dr. Priya uploaded DS Arrays Notes',ti:'5 min ago',ic:'📄'},
+    {t:'New student registered: Rahul Verma',ti:'12 min ago',ic:'🎓'},
+    {t:'34 students completed DBMS quiz',ti:'1 hr ago',ic:'📊'},
+    {t:'OS Unit 3 video published',ti:'2 hrs ago',ic:'🎥'},
+    {t:'Placement drive announcement sent',ti:'3 hrs ago',ic:'📣'},
+  ];
+  return(
+    <div className="page">
+      <div className="ph"><div><div className="ph-t">Admin Control Center</div><div className="ph-s">Platform overview — Augnana</div></div><button className="btn bp" onClick={()=>setPage('users')}>+ Add User</button></div>
+      <div className="sg">
+        {[{ic:'🎓',v:'3,240',l:'Students',c:'var(--blue)'},{ic:'👨‍🏫',v:'186',l:'Faculty',c:'var(--teal)'},{ic:'📁',v:allRes.length,l:'Resources',c:'var(--amber)'},{ic:'🔥',v:'814',l:'Active Today',c:'var(--rose)'}].map((s,i)=>(
+          <div key={i} className="sc"><div className="sc-ac" style={{background:s.c}}/><div className="sc-ic">{s.ic}</div><div className="sc-v">{s.v}</div><div className="sc-l">{s.l}</div></div>
+        ))}
+      </div>
+      <div className="g2" style={{alignItems:'start'}}>
+        <div className="card">
+          <div className="ch"><div className="ct">Subject Overview</div><button className="btn btn-xs bg" onClick={()=>setPage('resources')}>All Resources →</button></div>
+          <table className="tbl">
+            <thead><tr><th>Subject</th><th>Resources</th><th>Views</th><th>Status</th></tr></thead>
+            <tbody>{SUBJECTS.map((s,i)=>(
+              <tr key={s.id}>
+                <td style={{color:'var(--t1)',fontWeight:600}}>{s.emoji} {s.name}</td>
+                <td>{20+i*8}</td><td>{400+i*130}</td>
+                <td><span className="badge bbt">Active</span></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+        <div>
+          <div className="card">
+            <div className="ch"><div className="ct">Live Activity</div></div>
+            {activity.map((a,i)=>(
+              <div key={i} style={{display:'flex',gap:9,padding:'8px 0',borderBottom:'1px solid var(--b1)'}}>
+                <span style={{fontSize:16,flexShrink:0}}>{a.ic}</span>
+                <div><div style={{fontSize:13}}>{a.t}</div><div style={{fontSize:11,color:'var(--t4)',marginTop:2}}>{a.ti}</div></div>
+              </div>
+            ))}
+          </div>
+          <div className="card">
+            <div className="ct" style={{marginBottom:13}}>Quick Actions</div>
+            {[{l:'Manage Users',ic:'👥',p:'users'},{l:'All Resources',ic:'📁',p:'resources'},{l:'Announcements',ic:'📣',p:'announce'},{l:'Settings',ic:'⚙️',p:'settings'}].map(a=>(
+              <button key={a.l} className="btn bd" style={{width:'100%',marginBottom:7,justifyContent:'flex-start',gap:10}} onClick={()=>setPage(a.p)}>
+                <span>{a.ic}</span>{a.l}<span style={{marginLeft:'auto',color:'var(--t4)'}}>›</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ROOT ─── */
+function App(){
+  const [user,setUser]=useState(null);
+  const [page,setPage]=useState('dashboard');
+  const [toasts,setToasts]=useState([]);
+
+  const toast=useCallback((msg,type='info')=>{
+    const id=Date.now()+Math.random();
+    setToasts(t=>[...t,{id,msg,type}]);
+    setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),3000);
+  },[]);
+
+  if(!user)return(
+    <Ctx.Provider value={{toast}}>
+      <Login onLogin={u=>{setUser(u);setPage('dashboard');}}/>
+      <Toast toasts={toasts} remove={id=>setToasts(t=>t.filter(x=>x.id!==id))}/>
+    </Ctx.Provider>
+  );
+
+  return(
+    <Ctx.Provider value={{toast,user}}>
+      <div className="layout">
+        <Sidebar user={user} page={page} setPage={p=>setPage(p)} onLogout={()=>{setUser(null);setPage('dashboard');}}/>
+        <div className="main" key={page}>
+          {user.role==='student'&&<StudentApp user={user} page={page} setPage={setPage}/>}
+          {user.role==='faculty'&&<FacultyApp user={user} page={page} setPage={setPage}/>}
+          {user.role==='admin'  &&<AdminApp   user={user} page={page} setPage={setPage}/>}
+        </div>
+      </div>
+      <Toast toasts={toasts} remove={id=>setToasts(t=>t.filter(x=>x.id!==id))}/>
+    </Ctx.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
